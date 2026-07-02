@@ -162,7 +162,7 @@ export const wedding: WeddingConfig = {
     ctaLabel: "RSVP — Bhalisa",
   },
   invitation: {
-    eyebrow: "Umemo · You are invited",
+    eyebrow: "Isimemo · You are invited",
     heading: "The Chidavose & Zondo Families",
     body:
       "joyfully request the honour of your presence at the wedding celebration of their children, as two clans become one family in the way of those who came before us.",
@@ -209,7 +209,7 @@ export const wedding: WeddingConfig = {
     image: undefined,
   },
   countdown: {
-    eyebrow: "Uhlelo Lwezikhathi",
+    eyebrow: "Isikhathi Sesisondele",
     titleZu: "Counting the Days",
     titleEn: "Until we are united",
     labels: [
