@@ -64,16 +64,14 @@ function buildStitches(
           key={`h${key}${hi++}`}
           cx={s.x1 + ux * d}
           cy={s.y1 + uy * d}
-          r={1.8}
+          r={1}
           fill="#1b0e09"
-          fillOpacity={0.82}
-          stroke="rgba(255,240,210,0.30)"
-          strokeWidth={0.6}
+          fillOpacity={0.55}
         />,
       );
     }
 
-    const tl = step * 0.82;
+    const tl = step * 0.72;
     for (let i = 0; i < n; i++) {
       const dm = inset + (i + 0.5) * step;
       const mx = s.x1 + ux * dm;
@@ -89,19 +87,20 @@ function buildStitches(
           y1={ay}
           x2={bx}
           y2={by}
-          stroke="#E7D4A0"
-          strokeWidth={2.4}
+          stroke="#D8C494"
+          strokeWidth={1.4}
+          strokeOpacity={0.9}
           strokeLinecap="round"
         />,
         <line
           key={`tl${key}${ti}`}
-          x1={ax + nx * -0.55}
-          y1={ay + ny * -0.55}
-          x2={bx + nx * -0.55}
-          y2={by + ny * -0.55}
-          stroke="#FCF2D1"
-          strokeWidth={1}
-          strokeOpacity={0.85}
+          x1={ax + nx * -0.4}
+          y1={ay + ny * -0.4}
+          x2={bx + nx * -0.4}
+          y2={by + ny * -0.4}
+          stroke="#F3E6BE"
+          strokeWidth={0.5}
+          strokeOpacity={0.4}
           strokeLinecap="round"
         />,
       );
@@ -113,7 +112,7 @@ function buildStitches(
     <>
       <defs>
         <filter id={`stitchSh-${key}`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="0.7" stdDeviation="0.6" floodColor="#000" floodOpacity="0.55" />
+          <feDropShadow dx="0" dy="0.5" stdDeviation="0.4" floodColor="#000" floodOpacity="0.3" />
         </filter>
       </defs>
       <g>{holes}</g>
@@ -224,7 +223,7 @@ export default function EnvelopeGate() {
         { x1: 0, y1: 0, x2: w / 2, y2: fh },
         { x1: w, y1: 0, x2: w / 2, y2: fh },
       ],
-      { inset: 34, period: 16, lean: 0.42, key: "flap" },
+      { inset: 34, period: 13, lean: 0.26, key: "flap" },
     );
   }, [dims]);
 
@@ -240,7 +239,7 @@ export default function EnvelopeGate() {
         { x1: w - M, y1: h - M, x2: M, y2: h - M },
         { x1: M, y1: h - M, x2: M, y2: M },
       ],
-      { inset: 26, period: 16, lean: 0.42, key: "frame" },
+      { inset: 26, period: 13, lean: 0.26, key: "frame" },
     );
   }, [dims]);
 

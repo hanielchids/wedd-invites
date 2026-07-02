@@ -7,6 +7,7 @@ import OurPath from "@/components/OurPath";
 import Venue from "@/components/Venue";
 import Countdown from "@/components/Countdown";
 import RSVPForm from "@/components/RSVPForm";
+import Accommodations from "@/components/Accommodations";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         <Venue />
         <Countdown />
         <RSVPForm />
+        <Accommodations />
       </main>
       <Footer />
     </>

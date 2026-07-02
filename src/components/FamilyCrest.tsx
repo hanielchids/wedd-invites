@@ -11,7 +11,6 @@ export default function FamilyCrest() {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-10">
           <div className="text-right">
             <h2 className="display-sm text-ink">{a.surname}</h2>
-            <p className="mt-2 font-body text-sm italic text-ink/55 sm:text-base">{a.house}</p>
           </div>
           <div className="flex flex-col items-center gap-2 text-gold">
             <span className="h-10 w-px bg-gold/50 sm:h-16" />
@@ -20,7 +19,6 @@ export default function FamilyCrest() {
           </div>
           <div className="text-left">
             <h2 className="display-sm text-ink">{b.surname}</h2>
-            <p className="mt-2 font-body text-sm italic text-ink/55 sm:text-base">{b.house}</p>
           </div>
         </div>
       </Reveal>

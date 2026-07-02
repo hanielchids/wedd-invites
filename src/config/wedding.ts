@@ -18,6 +18,19 @@ export type StoryStep = {
   body: string;
 };
 
+export type StayOption = {
+  /** Small tier tag shown above the name, e.g. "Budget Beauty". */
+  tier: string;
+  name: string;
+  address: string;
+  /** One-line description of the place. */
+  blurb: string;
+  /** Approximate nightly rate, e.g. "± R850 / night". Omit to hide. */
+  priceGuide?: string;
+  /** Google Maps link for the place. */
+  mapsUrl: string;
+};
+
 export type WeddingConfig = {
   /** Used in <title>, share cards, etc. */
   meta: {
@@ -25,16 +38,16 @@ export type WeddingConfig = {
     description: string;
   };
   couple: {
-    /** Long script form shown in the header + footer, e.g. "Themba & Vuyokazi". */
+    /** Long script form shown in the header + footer, e.g. "Haniel & Zenzeleni". */
     scriptName: string;
-    /** Compact monogram shown inside the wax seal, e.g. "T & V". */
+    /** Compact monogram shown inside the wax seal, e.g. "H & Z". */
     monogram: string;
     partnerA: { firstName: string };
     partnerB: { firstName: string };
   };
   families: {
-    a: { surname: string; house: string };
-    b: { surname: string; house: string };
+    a: { surname: string };
+    b: { surname: string };
     /** Sentence joining the two families on the invitation. */
     invitationLine: string;
   };
@@ -54,7 +67,6 @@ export type WeddingConfig = {
   hero: {
     eyebrow: string;
     celebrationType: string;
-    tagline: string;
     ctaLabel: string;
   };
   invitation: {
@@ -96,38 +108,44 @@ export type WeddingConfig = {
     heading: string;
     intro: string;
     deadlineLabel: string;
+    /** Polite "confirmed RSVPs only" notice, highlighted in the RSVP section. */
+    entryNote: string;
     dressNote: string;
     acceptLabel: string;
     declineLabel: string;
     submitLabel: string;
-    mealOptions: string[];
     dietaryOptions: string[];
     successMessage: string;
+  };
+  /** "Where to stay" section — suggested accommodation for travelling guests. */
+  stay: {
+    eyebrow: string;
+    titleEn: string;
+    intro: string;
+    options: StayOption[];
   };
   footer: {
     families: string;
     thanksZu: string;
     thanksEn: string;
-    /** Studio / designer credit. */
-    credit: string;
   };
 };
 
 export const wedding: WeddingConfig = {
   meta: {
-    title: "Themba & Vuyokazi · Umshado",
+    title: "Haniel & Zenzeleni · Umshado",
     description:
-      "The Nkosi and Dlamini families joyfully invite you to the traditional wedding of Themba & Vuyokazi — 14 February 2027, Summer Place, Hyde Park.",
+      "The Chidavose and Zondo families joyfully invite you to the traditional wedding of Haniel & Zenzeleni — 28 November 2026, Vryheid.",
   },
   couple: {
-    scriptName: "Themba & Vuyokazi",
-    monogram: "T & V",
-    partnerA: { firstName: "Themba" },
-    partnerB: { firstName: "Vuyokazi" },
+    scriptName: "Haniel & Zenzeleni",
+    monogram: "H & Z",
+    partnerA: { firstName: "Haniel" },
+    partnerB: { firstName: "Zenzeleni" },
   },
   families: {
-    a: { surname: "Nkosi", house: "House of Nkosi" },
-    b: { surname: "Dlamini", house: "House of Dlamini" },
+    a: { surname: "Chidavose" },
+    b: { surname: "Zondo" },
     invitationLine:
       "joyfully request the honour of your presence at the wedding celebration of their children",
   },
@@ -136,17 +154,16 @@ export const wedding: WeddingConfig = {
     hint: "Tap the seal to open",
     enterLabel: "Open invitation",
   },
-  dateISO: "2027-02-14T15:00:00+02:00",
-  dateLabel: "14 February 2027",
+  dateISO: "2026-11-28T15:00:00+02:00",
+  dateLabel: "28 November 2026",
   hero: {
     eyebrow: "Umshado",
     celebrationType: "Traditional Wedding Celebration",
-    tagline: "Ngobukhosi · Together in tradition",
     ctaLabel: "RSVP — Bhalisa",
   },
   invitation: {
     eyebrow: "Umemo · You are invited",
-    heading: "The Nkosi & Dlamini Families",
+    heading: "The Chidavose & Zondo Families",
     body:
       "joyfully request the honour of your presence at the wedding celebration of their children, as two clans become one family in the way of those who came before us.",
   },
@@ -160,28 +177,21 @@ export const wedding: WeddingConfig = {
         titleZu: "Ukushela",
         titleEn: "The Courtship",
         body:
-          "Themba made his intentions known the way his forefathers did — with respect, through family, in the proper way. He approached Vuyokazi's family with dignity, and the two were given the blessing to walk the path together.",
+          "Haniel made his intentions known the way his forefathers did — with respect, through family, in the proper way. He approached Zenzeleni's family with dignity, and the two were given the blessing to walk the path together.",
       },
       {
         number: "02",
         titleZu: "Ilobolo",
         titleEn: "The Bride Price",
         body:
-          "The two families gathered in sacred negotiation. Eleven cattle were agreed upon — a testament to Vuyokazi's great worth and the deep honour the Nkosi family holds for the Dlamini clan. Ubuntu was lived, not spoken.",
+          "The two families gathered in sacred negotiation. Eleven cattle were agreed upon — a testament to Zenzeleni's great worth and the deep honour the Chidavose family holds for the Zondo clan. Ubuntu was lived, not spoken.",
       },
       {
         number: "03",
-        titleZu: "Umembeso",
-        titleEn: "The Gift Exchange",
-        body:
-          "Blankets, cloth, and beaded jewellery passed between the families — each gift a thread weaving two households into one. The women ululated, the men gave thanks, and two clans became one family.",
-      },
-      {
-        number: "04",
         titleZu: "Umshado",
         titleEn: "The Wedding Day",
         body:
-          "Today, Themba and Vuyokazi stand before those they love most and complete what tradition began. The journey that started with a glance across a family gathering ends here — and a new story begins. Siyabonga.",
+          "Today, Haniel and Zenzeleni stand before those they love most and complete what tradition began. The journey that started with a glance across a family gathering ends here — and a new story begins. Siyabonga.",
       },
     ],
   },
@@ -189,10 +199,10 @@ export const wedding: WeddingConfig = {
     eyebrow: "Indawo Yomcimbi",
     titleZu: "Indawo Yomcimbi",
     titleEn: "The Venue · Where we celebrate",
-    name: "Summer Place",
-    area: "Hyde Park · Johannesburg",
-    address: "69 Melville Road, Hyde Park, Johannesburg, South Africa",
-    mapsUrl: "https://maps.google.com/?q=Summer+Place+Hyde+Park+Johannesburg",
+    name: "80 Boeren St",
+    area: "Vryheid · KwaZulu-Natal",
+    address: "80 Boeren St, Vryheid, South Africa",
+    mapsUrl: "https://maps.google.com/?q=80+Boeren+St+Vryheid",
     doorsOpen: "Doors open at 13:00",
     ceremony: "Ceremony begins at 15:00",
     // Drop a real image at /public/venue.jpg and set image: "/venue.jpg"
@@ -214,19 +224,70 @@ export const wedding: WeddingConfig = {
     eyebrow: "Bhalisa · Register",
     heading: "Confirm Your Attendance",
     intro: "You are invited.",
-    deadlineLabel: "Please RSVP by 31 October 2026",
+    deadlineLabel: "Please RSVP by 30 September 2026",
+    entryNote:
+      "Kindly note — so that we may welcome every guest by name, entry on the day is reserved for confirmed RSVPs only. Please do respond by the date above; we would hate for you to miss it.",
     dressNote: "Traditional attire is warmly encouraged.",
-    acceptLabel: "Ngizobuya — Accept",
-    declineLabel: "Ngixolele — Decline",
+    acceptLabel: "Yebo — Accept",
+    declineLabel: "Cha — Decline",
     submitLabel: "Thumela — Send Confirmation",
-    mealOptions: ["Beef", "Chicken", "Lamb", "Vegetarian", "Vegan"],
-    dietaryOptions: ["Gluten-free", "Dairy-free", "Nut allergy", "Seafood allergy"],
+    dietaryOptions: [
+      "Vegetarian",
+      "Vegan",
+      "Gluten-free",
+      "Dairy-free",
+      "Nut allergy",
+      "Seafood allergy",
+    ],
     successMessage: "Siyabonga — your RSVP has been received.",
   },
+  stay: {
+    eyebrow: "Indawo Yokulala · Where to Stay",
+    titleEn: "Places to Rest",
+    intro:
+      "For guests travelling from afar, these are our suggested stays in and around Vryheid — book early, rooms in town are limited.",
+    options: [
+      {
+        tier: "Charming · Budget-Friendly",
+        name: "Presidents Boutique Lodge by iLawu",
+        address: "193 President Street, Vryheid",
+        blurb:
+          "A stylish, modern boutique lodge with an outdoor pool, minutes from the town centre — remarkable value for the finish.",
+        priceGuide: "from ± R750 / night",
+        mapsUrl:
+          "https://maps.google.com/?q=Presidents+Boutique+Lodge+by+iLawu+193+President+Street+Vryheid",
+      },
+      {
+        tier: "Comfortable · Mid-Range",
+        name: "Shonalanga Lodge",
+        address: "136 Kerk Street, Vryheid",
+        blurb:
+          "A warm garden lodge renovated to a plush finish, with secure parking and hearty breakfasts — an easy, restful stay.",
+        priceGuide: "± R1 350 / night",
+        mapsUrl: "https://maps.google.com/?q=Shonalanga+Lodge+136+Kerk+Street+Vryheid",
+      },
+      {
+        tier: "Heritage · Luxury",
+        name: "Villa Beryl Guesthouse",
+        address: "169 Hoog Street, Vryheid",
+        blurb:
+          "One of Vryheid's grand old homes — sandstone foundations, Oregon pine floors and wide verandas, kept in true luxury style.",
+        priceGuide: "± R1 550 / night",
+        mapsUrl: "https://maps.google.com/?q=Villa+Beryl+Guesthouse+169+Hoog+Street+Vryheid",
+      },
+      {
+        tier: "Our Pick",
+        name: "Oxford Lodge",
+        address: "128 Deputasie Street, Vryheid",
+        blurb:
+          "A gracious four-star lodge set in lush gardens with an on-site restaurant — our pick for guests who want everything taken care of.",
+        mapsUrl: "https://maps.google.com/?q=Oxford+Lodge+128+Deputasie+Street+Vryheid",
+      },
+    ],
+  },
   footer: {
-    families: "Nkosi · Dlamini",
+    families: "Chidavose · Zondo",
     thanksZu: "Siyabonga",
     thanksEn: "We give thanks",
-    credit: "Designed by Wedico",
   },
 };

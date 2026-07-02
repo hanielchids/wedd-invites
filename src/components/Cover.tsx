@@ -75,11 +75,8 @@ export default function Cover() {
           <motion.p {...rise(0.95)} className="mt-2 font-body text-base italic text-ivory/70">
             {hero.celebrationType}
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-1 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold-light/80">
-            {hero.tagline}
-          </motion.p>
 
-          <motion.a {...rise(1.2)} href="#rsvp" className="btn-primary mt-9">
+          <motion.a {...rise(1.1)} href="#rsvp" className="btn-primary mt-9">
             {hero.ctaLabel}
           </motion.a>
         </div>

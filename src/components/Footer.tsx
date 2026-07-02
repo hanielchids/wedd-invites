@@ -14,9 +14,6 @@ export default function Footer() {
         </p>
         <p className="mt-10 font-script text-3xl text-ivory/90">{footer.thanksZu}</p>
         <p className="mt-1 font-body text-sm italic text-ivory/50">{footer.thanksEn}</p>
-        <p className="mt-10 font-sans text-[0.6rem] uppercase tracking-[0.3em] text-ivory/30">
-          {footer.credit}
-        </p>
       </div>
     </footer>
   );

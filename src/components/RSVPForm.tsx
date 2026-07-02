@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { wedding } from "@/config/wedding";
 import Reveal from "./Reveal";
 import Ornament from "./Ornament";
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+const SUBMITTED_KEY = "rsvpSubmitted";
 
 /** Blush RSVP form. Posts JSON to /api/rsvp and shows an inline success state. */
 export default function RSVPForm() {
@@ -13,6 +15,18 @@ export default function RSVPForm() {
   const [attending, setAttending] = useState<"accept" | "decline" | null>(null);
   const [diet, setDiet] = useState<string[]>([]);
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const renderedAt = useRef(0); // for the bot fill-time heuristic
+
+  // One entry per browser: returning guests see their confirmation, not the form.
+  useEffect(() => {
+    renderedAt.current = Date.now();
+    try {
+      if (localStorage.getItem(SUBMITTED_KEY)) setStatus("success");
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const toggleDiet = (item: string) =>
     setDiet((d) => (d.includes(item) ? d.filter((x) => x !== item) : [...d, item]));
@@ -20,6 +34,7 @@ export default function RSVPForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
+    setErrorMsg(null);
     const form = e.currentTarget;
     const fd = new FormData(form);
     const payload = {
@@ -27,10 +42,10 @@ export default function RSVPForm() {
       email: fd.get("email"),
       phone: fd.get("phone"),
       attending,
-      guests: fd.get("guests"),
-      meal: fd.get("meal"),
       dietary: diet,
       message: fd.get("message"),
+      website: fd.get("website"), // honeypot — empty for humans
+      formAge: Date.now() - renderedAt.current,
     };
 
     try {
@@ -39,10 +54,19 @@ export default function RSVPForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "Request failed");
+      }
+      try {
+        localStorage.setItem(SUBMITTED_KEY, "1");
+      } catch {
+        /* ignore */
+      }
       setStatus("success");
       form.reset();
-    } catch {
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : null);
       setStatus("error");
     }
   }
@@ -61,6 +85,9 @@ export default function RSVPForm() {
             {rsvp.deadlineLabel}
           </p>
           <p className="mt-1 font-body text-sm italic text-ink/55">{rsvp.dressNote}</p>
+          <p className="mx-auto mt-6 max-w-md border border-wine/35 bg-wine/[0.06] px-6 py-4 font-body text-sm italic leading-relaxed text-wine">
+            {rsvp.entryNote}
+          </p>
         </Reveal>
 
         {status === "success" ? (
@@ -70,6 +97,12 @@ export default function RSVPForm() {
         ) : (
           <Reveal>
             <form onSubmit={handleSubmit} className="mt-12 space-y-7">
+              {/* honeypot — invisible to humans, irresistible to bots */}
+              <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden>
+                <label htmlFor="website">Website</label>
+                <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+              </div>
+
               <div>
                 <label htmlFor="fullName" className="field-label">
                   Full Name *
@@ -80,9 +113,9 @@ export default function RSVPForm() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="email" className="field-label">
-                    Email Address
+                    Email Address *
                   </label>
-                  <input id="email" name="email" type="email" className="field-input" placeholder="email@example.com" />
+                  <input id="email" name="email" type="email" required className="field-input" placeholder="email@example.com" />
                 </div>
                 <div>
                   <label htmlFor="phone" className="field-label">
@@ -115,37 +148,6 @@ export default function RSVPForm() {
                       {label}
                     </button>
                   ))}
-                </div>
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="guests" className="field-label">
-                    Number of Guests
-                  </label>
-                  <input
-                    id="guests"
-                    name="guests"
-                    type="number"
-                    min={1}
-                    defaultValue={1}
-                    className="field-input"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="meal" className="field-label">
-                    Meal Preference
-                  </label>
-                  <select id="meal" name="meal" className="field-input" defaultValue="">
-                    <option value="" disabled>
-                      Select…
-                    </option>
-                    {rsvp.mealOptions.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
 
@@ -185,7 +187,7 @@ export default function RSVPForm() {
 
               {status === "error" && (
                 <p className="font-body text-sm text-wine">
-                  Something went wrong sending your RSVP. Please try again.
+                  {errorMsg ?? "Something went wrong sending your RSVP. Please try again."}
                 </p>
               )}
 

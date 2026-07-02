@@ -3,27 +3,93 @@ import { NextResponse } from "next/server";
 /**
  * RSVP endpoint.
  *
- * Right now it validates the payload and logs it to the server console so the
- * scaffold runs with zero external setup. To make it real, pick ONE:
+ * Validates the payload, then forwards it as a Google Forms response so every
+ * RSVP lands in the couple's linked Google Sheet — no database needed.
  *
- *   1. Email   — add `resend` (or nodemailer) and email the couple here.
- *   2. Database — insert a row into Supabase / Postgres / a Google Sheet.
- *   3. No-code  — change the form's fetch URL to a Formspree / Getform endpoint
- *                 and delete this route entirely.
- *
- * Store secrets in .env.local (see README), never in this file.
+ * The couple's form id + question entry ids are baked in below (they are
+ * public — anyone with the form link can see them). Env vars of the same name
+ * override them, e.g. to point at a different form per environment.
  */
+
+const FORM_ID =
+  process.env.GOOGLE_FORM_ID ??
+  "1FAIpQLSe5TV1GUaFZFtvviicOyjuDxdElnx3peyoVPjK9iqc5BYKvdg";
+
+const ENTRY = {
+  name: process.env.GOOGLE_FORM_ENTRY_NAME ?? "entry.320175062",
+  email: process.env.GOOGLE_FORM_ENTRY_EMAIL ?? "entry.1724095435",
+  phone: process.env.GOOGLE_FORM_ENTRY_PHONE ?? "entry.1870082149",
+  attending: process.env.GOOGLE_FORM_ENTRY_ATTENDING ?? "entry.1698660904",
+  dietary: process.env.GOOGLE_FORM_ENTRY_DIETARY ?? "entry.327124612",
+  message: process.env.GOOGLE_FORM_ENTRY_MESSAGE ?? "entry.506214494",
+};
 
 type RSVPPayload = {
   fullName?: string;
   email?: string;
   phone?: string;
   attending?: "accept" | "decline" | null;
-  guests?: string;
-  meal?: string;
   dietary?: string[];
   message?: string;
+  /** Honeypot — rendered invisibly on the form; humans leave it empty. */
+  website?: string;
+  /** Milliseconds between the form rendering and being submitted. */
+  formAge?: number;
 };
+
+/**
+ * Anti-bot + duplicate guards. In-memory, so they reset on redeploy/cold
+ * start — a best-effort layer, not a vault. The Google Sheet is the source
+ * of truth; dedupe there for certainty (Data → Data clean-up → Remove
+ * duplicates on the email column).
+ */
+const MIN_FORM_AGE_MS = 2500; // faster than any human fills 6 fields
+const RATE_LIMIT = 5; // submissions per IP…
+const RATE_WINDOW_MS = 60 * 60 * 1000; // …per hour
+
+const seenEmails = new Set<string>();
+const hitsByIp = new Map<string, number[]>();
+
+function clientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+  );
+}
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const hits = (hitsByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  hits.push(now);
+  hitsByIp.set(ip, hits);
+  return hits.length > RATE_LIMIT;
+}
+
+/** Builds the Google Forms formResponse POST from the validated payload. */
+async function forwardToGoogleForm(data: RSVPPayload): Promise<boolean> {
+  const params = new URLSearchParams();
+  const entries: [string, string][] = [
+    [ENTRY.name, data.fullName ?? ""],
+    [ENTRY.email, data.email ?? ""],
+    [ENTRY.phone, data.phone ?? ""],
+    // The form's "Will you attend?" is multiple-choice with exactly Yes / No.
+    [ENTRY.attending, data.attending === "accept" ? "Yes" : "No"],
+    [ENTRY.dietary, (data.dietary ?? []).join(", ")],
+    [ENTRY.message, data.message ?? ""],
+  ];
+  for (const [key, value] of entries) {
+    if (value) params.append(key, value);
+  }
+
+  const res = await fetch(
+    `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    }
+  );
+  return res.ok;
+}
 
 export async function POST(request: Request) {
   let data: RSVPPayload;
@@ -33,8 +99,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
+  // Bots: honeypot filled, or the form submitted inhumanly fast. Pretend
+  // success so they don't adapt; record nothing.
+  if (data.website || typeof data.formAge !== "number" || data.formAge < MIN_FORM_AGE_MS) {
+    console.warn("RSVP dropped (bot heuristics):", clientIp(request));
+    return NextResponse.json({ ok: true });
+  }
+
+  if (rateLimited(clientIp(request))) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts — please try again later." },
+      { status: 429 }
+    );
+  }
+
   if (!data.fullName || data.fullName.trim().length < 2) {
     return NextResponse.json({ ok: false, error: "Name is required" }, { status: 422 });
+  }
+  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    return NextResponse.json(
+      { ok: false, error: "A valid email address is required" },
+      { status: 422 }
+    );
   }
   if (!data.attending) {
     return NextResponse.json(
@@ -43,8 +129,26 @@ export async function POST(request: Request) {
     );
   }
 
-  // --- Persist / notify here (see comment above). For now: log it. ---
-  console.log("📨 New RSVP:", JSON.stringify(data, null, 2));
+  // One email, one entry (best-effort — see note above).
+  const emailKey = data.email.trim().toLowerCase();
+  if (seenEmails.has(emailKey)) {
+    return NextResponse.json(
+      { ok: false, error: "An RSVP has already been received for this email address." },
+      { status: 409 }
+    );
+  }
 
+  try {
+    const forwarded = await forwardToGoogleForm(data);
+    if (!forwarded) throw new Error("Google Forms rejected the submission");
+  } catch (err) {
+    console.error("RSVP forward failed:", err);
+    return NextResponse.json(
+      { ok: false, error: "Could not record RSVP" },
+      { status: 502 }
+    );
+  }
+
+  seenEmails.add(emailKey);
   return NextResponse.json({ ok: true });
 }
