@@ -154,7 +154,7 @@ export const wedding: WeddingConfig = {
     hint: "Tap the seal to open",
     enterLabel: "Open invitation",
   },
-  dateISO: "2026-11-28T15:00:00+02:00",
+  dateISO: "2026-11-28T10:00:00+02:00",
   dateLabel: "28 November 2026",
   hero: {
     eyebrow: "Umshado",
@@ -203,8 +203,8 @@ export const wedding: WeddingConfig = {
     area: "Vryheid · KwaZulu-Natal",
     address: "80 Boeren St, Vryheid, South Africa",
     mapsUrl: "https://maps.google.com/?q=80+Boeren+St+Vryheid",
-    doorsOpen: "Doors open at 13:00",
-    ceremony: "Ceremony begins at 15:00",
+    doorsOpen: "From 10:00 in the morning",
+    ceremony: "Until 16:00 in the afternoon",
     // Drop a real image at /public/venue.jpg and set image: "/venue.jpg"
     image: undefined,
   },
