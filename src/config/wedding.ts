@@ -177,21 +177,21 @@ export const wedding: WeddingConfig = {
         titleZu: "Ukushela",
         titleEn: "The Courtship",
         body:
-          "Haniel made his intentions known the way his forefathers did — with respect, through family, in the proper way. He approached Zenzeleni's family with dignity, and the two were given the blessing to walk the path together.",
+          "Haniel made his intentions known the way his forefathers did — with respect, through family, in the proper way. He approached Zenzeleni's family with dignity.\n\nBut truth be told, the spark had been lit long before the elders ever gathered. The very first time they met, out in field service, Haniel's stunning presence caught Zenzeleni's eye. Right there in the ministry, captivated by him, Zenzi couldn't help but *shela* him on the spot.",
       },
       {
         number: "02",
         titleZu: "Ilobolo",
         titleEn: "The Bride Price",
         body:
-          "The two families gathered in sacred negotiation. Eleven cattle were agreed upon — a testament to Zenzeleni's great worth and the deep honour the Chidavose family holds for the Zondo clan. Ubuntu was lived, not spoken.",
+          "The two families gathered in sacred negotiation. Ilobolo was agreed upon — a testament to Zenzeleni's great worth and the deep honour the Chidavose family holds for the Zondo clan. Ubuntu was lived, not spoken.",
       },
       {
         number: "03",
         titleZu: "Umshado",
         titleEn: "The Wedding Day",
         body:
-          "Today, Haniel and Zenzeleni stand before those they love most and complete what tradition began. The journey that started with a glance across a family gathering ends here — and a new story begins. Siyabonga.",
+          "Today, Haniel and Zenzeleni stand before those they love most and complete what tradition began. The journey that started with a sudden spark out in field service — where Zenzi simply couldn't look away from how stunning Haniel was — starts a new story. Siyabonga.",
       },
     ],
   },

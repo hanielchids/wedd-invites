@@ -2,6 +2,17 @@ import { wedding } from "@/config/wedding";
 import Reveal from "./Reveal";
 import Ornament from "./Ornament";
 
+/** Renders *word* spans in a step body as <em>, e.g. isiZulu terms. */
+function emphasize(text: string) {
+  return text.split(/(\*[^*]+\*)/).map((part, i) =>
+    part.startsWith("*") && part.endsWith("*") ? (
+      <em key={i}>{part.slice(1, -1)}</em>
+    ) : (
+      part
+    )
+  );
+}
+
 /** "Indlela Yethu" — numbered steps of the traditional journey. */
 export default function OurPath() {
   const { story } = wedding;
@@ -35,7 +46,11 @@ export default function OurPath() {
                   </h3>
                   <p className="mt-1 font-body text-sm italic text-wine/80">{step.titleEn}</p>
                   <span className="mt-4 block h-px w-12 bg-gold/60" />
-                  <p className="mt-4 font-body text-lg leading-relaxed text-ink/75">{step.body}</p>
+                  {step.body.split("\n\n").map((para, p) => (
+                    <p key={p} className="mt-4 font-body text-lg leading-relaxed text-ink/75">
+                      {emphasize(para)}
+                    </p>
+                  ))}
                 </div>
               </li>
             </Reveal>
