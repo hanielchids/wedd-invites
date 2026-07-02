@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice">
+  <!--
+    Procedurally generated black-and-white "Jersey / Nguni" cowhide.
+    100% royalty-free (no stock photo). Organic patches come from fractal
+    noise that is hard-thresholded into irregular blobs via feColorMatrix.
+    Tune the look by editing: baseFrequency (patch size), seed (pattern),
+    and the alpha row multiplier/offset (patch coverage + edge softness).
+  -->
+  <defs>
+    <filter id="cowSpots" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0042 0.0052" numOctaves="3" seed="14" stitchTiles="stitch" result="noise"/>
+      <!-- Take the red channel of the noise into alpha: a = 9*R - 4.55 (clamped 0..1).
+           High multiplier => crisp patch edges; offset (~half the multiplier)
+           controls coverage. Low baseFrequency => large bold Jersey patches. -->
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0
+                                                       0 0 0 0 0
+                                                       0 0 0 0 0
+                                                       9 0 0 0 -4.55" result="mask"/>
+      <feComposite in="mask" in2="mask" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Off-white hide base -->
+  <rect width="1200" height="1600" fill="#F3ECE2"/>
+  <!-- Large bold irregular patches (near-black) -->
+  <g filter="url(#cowSpots)">
+    <rect width="1200" height="1600" fill="#171012"/>
+  </g>
+</svg>

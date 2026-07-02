@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-ink font-body antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-wine text-ivory;
+  }
+}
+
+@layer components {
+  /* Small, wide-letterspaced uppercase label used above headings. */
+  .eyebrow {
+    @apply font-sans uppercase tracking-eyebrow text-[0.62rem] sm:text-xs;
+  }
+
+  /* Display serif heading, fluid across breakpoints. */
+  .display {
+    @apply font-display font-medium leading-[1.05];
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+  }
+
+  .display-sm {
+    @apply font-display font-medium leading-tight;
+    font-size: clamp(1.7rem, 4.5vw, 3rem);
+  }
+
+  /* Thin gold rule with a centered diamond ornament. */
+  .ornament-rule {
+    @apply flex items-center justify-center gap-3 text-gold;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-3 font-sans uppercase tracking-[0.28em]
+           text-[0.7rem] sm:text-xs bg-wine text-ivory px-8 py-4
+           transition-colors duration-300 hover:bg-wine-dark;
+  }
+
+  .field-label {
+    @apply font-sans uppercase tracking-[0.22em] text-[0.62rem] text-ink/70 mb-2 block;
+  }
+
+  .field-input {
+    @apply w-full bg-transparent border border-ink/25 px-4 py-3 font-body text-ink
+           placeholder:text-ink/35 focus:border-wine focus:outline-none transition-colors;
+  }
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
