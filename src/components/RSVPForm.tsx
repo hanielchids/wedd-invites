@@ -121,7 +121,7 @@ export default function RSVPForm() {
                   <label htmlFor="phone" className="field-label">
                     Phone Number
                   </label>
-                  <input id="phone" name="phone" type="tel" className="field-input" placeholder="+27 ..." />
+                  <input id="phone" name="phone" type="tel" className="field-input" placeholder="00..." />
                 </div>
               </div>
 
