@@ -8,13 +8,11 @@ export default function Invitation() {
 
   return (
     <section className="relative overflow-hidden bg-ink px-5 py-24 sm:py-32">
-      {/* couple photo backdrop, positioned so faces stay in frame across crops */}
-      <div
-        className="absolute inset-0 bg-invite bg-cover bg-[position:center_30%]"
-        aria-hidden
-      />
-      {/* ink wash keeps the panel text legible over the photo */}
-      <div className="absolute inset-0 bg-ink/55" aria-hidden />
+      {/* couple photo backdrop — cropped so the couple is the centred focal point,
+          faded toward the ink base so the panel stays the hero */}
+      <div className="absolute inset-0 bg-invite bg-cover bg-center opacity-70" aria-hidden />
+      {/* light ink wash — just enough to darken the photo */}
+      <div className="absolute inset-0 bg-ink/40" aria-hidden />
       {/* faint hide texture behind the panel */}
       <div className="absolute inset-0 bg-cowhide bg-cover bg-center opacity-[0.06]" aria-hidden />
 

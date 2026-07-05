@@ -18,7 +18,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const DRAG_PX = 240; // how far you lift the seal for a full open
 const OPEN_THRESHOLD = 0.42; // release past this → it finishes opening
 const TAP_SLOP = 10; // px of movement below which a press counts as a tap
-const DISSOLVE_MS = 1900; // fade-to-site once the letter is open
+const DISSOLVE_MS = 650; // fade-to-site once the letter is open
 
 type Seg = { x1: number; y1: number; x2: number; y2: number };
 
@@ -162,10 +162,16 @@ export default function EnvelopeGate() {
       typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
     const seen =
       typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY) === "1";
+    // Skip the ceremony on slow connections (Network Information API — absent
+    // on Safari/Firefox, in which case we assume the connection is fine).
+    const conn = (navigator as { connection?: { effectiveType?: string; saveData?: boolean } })
+      .connection;
+    const slowNet =
+      !!conn && (conn.saveData || ["slow-2g", "2g", "3g"].includes(conn.effectiveType ?? ""));
 
     setReduce(!!prefersReduced);
     setCoarse(!!isCoarse);
-    if (!envelope.enabled || prefersReduced || seen) {
+    if (!envelope.enabled || prefersReduced || seen || slowNet) {
       setShow(false);
       document.body.style.overflow = "";
     } else {
