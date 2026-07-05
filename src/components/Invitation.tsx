@@ -8,11 +8,18 @@ export default function Invitation() {
 
   return (
     <section className="relative overflow-hidden bg-ink px-5 py-24 sm:py-32">
+      {/* couple photo backdrop, positioned so faces stay in frame across crops */}
+      <div
+        className="absolute inset-0 bg-invite bg-cover bg-[position:center_30%]"
+        aria-hidden
+      />
+      {/* ink wash keeps the panel text legible over the photo */}
+      <div className="absolute inset-0 bg-ink/55" aria-hidden />
       {/* faint hide texture behind the panel */}
       <div className="absolute inset-0 bg-cowhide bg-cover bg-center opacity-[0.06]" aria-hidden />
 
       <Reveal className="relative mx-auto max-w-prose text-center">
-        <div className="border border-gold/25 px-6 py-12 sm:px-12 sm:py-16">
+        <div className="border border-gold/25 bg-ink/55 px-6 py-12 backdrop-blur-[2px] sm:px-12 sm:py-16">
           <p className="eyebrow text-gold-light">{invitation.eyebrow}</p>
           <h2 className="display-sm mt-6 text-ivory">{invitation.heading}</h2>
           <p className="mx-auto mt-6 max-w-md font-body text-lg leading-relaxed text-ivory/75">

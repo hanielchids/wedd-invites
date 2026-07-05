@@ -33,6 +33,8 @@ const config: Config = {
         // Real Holstein cowhide photo (Pexels, free licence). The procedural
         // SVG remains at /textures/cowhide.svg as a zero-dependency fallback.
         cowhide: "url('/textures/cowhide.jpg')",
+        // Couple photo behind the invitation panel.
+        invite: "url('/images/IMG_7981.jpg')",
       },
       keyframes: {
         "fade-up": {
