@@ -35,6 +35,8 @@ const config: Config = {
         cowhide: "url('/textures/cowhide.jpg')",
         // Couple photo behind the invitation panel.
         invite: "url('/images/IMG_7981.jpg')",
+        // Couple photo behind the countdown section.
+        countdown: "url('/images/IMG_3039.jpg')",
       },
       keyframes: {
         "fade-up": {

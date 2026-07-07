@@ -33,6 +33,8 @@ export default function Countdown() {
 
   return (
     <section className="relative overflow-hidden bg-wine px-5 py-24 text-center sm:py-32">
+      <div className="absolute inset-0 bg-countdown bg-cover bg-center" aria-hidden />
+      <div className="absolute inset-0 bg-wine-dark/80" aria-hidden />
       <div className="absolute inset-0 bg-cowhide bg-cover bg-center opacity-[0.07]" aria-hidden />
       <div className="relative mx-auto max-w-content">
         <p className="eyebrow text-gold-light">{countdown.eyebrow}</p>
