@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   animate,
@@ -20,107 +20,6 @@ const OPEN_THRESHOLD = 0.42; // release past this → it finishes opening
 const TAP_SLOP = 10; // px of movement below which a press counts as a tap
 const DISSOLVE_MS = 650; // fade-to-site once the letter is open
 
-type Seg = { x1: number; y1: number; x2: number; y2: number };
-
-/**
- * Generates realistic saddle-stitching along each seam segment: a row of
- * punched holes (dark recess + lit rim) joined by waxed-thread stitches that
- * lean diagonally, each with a sheen highlight and a soft drop shadow. Geometry
- * is built in real pixels so angles and spacing stay true and responsive.
- */
-function buildStitches(
-  segments: Seg[],
-  opts: { inset: number; period: number; lean: number; key: string },
-) {
-  const { inset, period, lean, key } = opts;
-  const ca = Math.cos(lean);
-  const sa = Math.sin(lean);
-  const holes: JSX.Element[] = [];
-  const threads: JSX.Element[] = [];
-  let hi = 0;
-  let ti = 0;
-
-  for (const s of segments) {
-    const dx = s.x2 - s.x1;
-    const dy = s.y2 - s.y1;
-    const L = Math.hypot(dx, dy);
-    const usable = L - 2 * inset;
-    if (usable < period) continue;
-
-    const ux = dx / L;
-    const uy = dy / L;
-    const nx = -uy; // unit normal (for the highlight offset)
-    const ny = ux;
-    const vx = ux * ca - uy * sa; // thread direction, leaned off the seam
-    const vy = ux * sa + uy * ca;
-
-    const n = Math.max(2, Math.round(usable / period));
-    const step = usable / n;
-
-    for (let i = 0; i <= n; i++) {
-      const d = inset + i * step;
-      holes.push(
-        <circle
-          key={`h${key}${hi++}`}
-          cx={s.x1 + ux * d}
-          cy={s.y1 + uy * d}
-          r={1}
-          fill="#1b0e09"
-          fillOpacity={0.55}
-        />,
-      );
-    }
-
-    const tl = step * 0.72;
-    for (let i = 0; i < n; i++) {
-      const dm = inset + (i + 0.5) * step;
-      const mx = s.x1 + ux * dm;
-      const my = s.y1 + uy * dm;
-      const ax = mx - (vx * tl) / 2;
-      const ay = my - (vy * tl) / 2;
-      const bx = mx + (vx * tl) / 2;
-      const by = my + (vy * tl) / 2;
-      threads.push(
-        <line
-          key={`t${key}${ti}`}
-          x1={ax}
-          y1={ay}
-          x2={bx}
-          y2={by}
-          stroke="#D8C494"
-          strokeWidth={1.4}
-          strokeOpacity={0.9}
-          strokeLinecap="round"
-        />,
-        <line
-          key={`tl${key}${ti}`}
-          x1={ax + nx * -0.4}
-          y1={ay + ny * -0.4}
-          x2={bx + nx * -0.4}
-          y2={by + ny * -0.4}
-          stroke="#F3E6BE"
-          strokeWidth={0.5}
-          strokeOpacity={0.4}
-          strokeLinecap="round"
-        />,
-      );
-      ti++;
-    }
-  }
-
-  return (
-    <>
-      <defs>
-        <filter id={`stitchSh-${key}`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="0.5" stdDeviation="0.4" floodColor="#000" floodOpacity="0.3" />
-        </filter>
-      </defs>
-      <g>{holes}</g>
-      <g filter={`url(#stitchSh-${key})`}>{threads}</g>
-    </>
-  );
-}
-
 /**
  * First-load intro letter. The whole screen is a cowhide envelope sealed with
  * the couple's wax crest, centred. It opens ONLY by interaction, animated like
@@ -137,7 +36,6 @@ export default function EnvelopeGate() {
   const [reduce, setReduce] = useState(false);
   const [coarse, setCoarse] = useState(false); // touch device → "tap" copy
   const [entering, setEntering] = useState(false);
-  const [dims, setDims] = useState({ w: 0, h: 0 }); // viewport px, for stitch geometry
 
   const progress = useMotionValue(0); // 0 = sealed, 1 = fully open
   const drag = useRef({ active: false, startY: 0, moved: 0, done: false });
@@ -211,44 +109,6 @@ export default function EnvelopeGate() {
     animate(progress, 0, { type: "spring", stiffness: 150, damping: 18 });
   }, [progress]);
 
-  // keep stitch geometry in sync with the viewport
-  useEffect(() => {
-    const update = () => setDims({ w: window.innerWidth, h: window.innerHeight });
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  // stitches along the flap's two folded edges (apex pinned to screen centre)
-  const flapStitches = useMemo(() => {
-    const { w, h } = dims;
-    if (!w) return null;
-    const fh = h / 2;
-    return buildStitches(
-      [
-        { x1: 0, y1: 0, x2: w / 2, y2: fh },
-        { x1: w, y1: 0, x2: w / 2, y2: fh },
-      ],
-      { inset: 34, period: 13, lean: 0.26, key: "flap" },
-    );
-  }, [dims]);
-
-  // stitches binding the outer edge of the whole letter
-  const frameStitches = useMemo(() => {
-    const { w, h } = dims;
-    if (!w) return null;
-    const M = 18;
-    return buildStitches(
-      [
-        { x1: M, y1: M, x2: w - M, y2: M },
-        { x1: w - M, y1: M, x2: w - M, y2: h - M },
-        { x1: w - M, y1: h - M, x2: M, y2: h - M },
-        { x1: M, y1: h - M, x2: M, y2: M },
-      ],
-      { inset: 26, period: 13, lean: 0.26, key: "frame" },
-    );
-  }, [dims]);
-
   // ── pointer = unified mouse + touch. Tap opens; drag lifts the flap ──
   const onPointerDown = (e: React.PointerEvent) => {
     if (drag.current.done) return;
@@ -315,18 +175,6 @@ export default function EnvelopeGate() {
             aria-hidden
           />
 
-          {/* saddle-stitched leather binding around the whole letter */}
-          {frameStitches && (
-            <svg
-              className="pointer-events-none absolute inset-0 z-[12] h-full w-full"
-              viewBox={`0 0 ${dims.w} ${dims.h}`}
-              preserveAspectRatio="xMidYMid meet"
-              aria-hidden
-            >
-              {frameStitches}
-            </svg>
-          )}
-
           {/* couple's name on the interior, revealed as the flap lifts */}
           <div className="absolute inset-x-0 top-[66%] flex justify-center" aria-hidden>
             <span className="font-script text-4xl text-gold/70 sm:text-6xl">
@@ -388,17 +236,6 @@ export default function EnvelopeGate() {
                 vectorEffect="non-scaling-stroke"
               />
             </svg>
-            {/* realistic saddle-stitching just inside the gold edge */}
-            {flapStitches && (
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox={`0 0 ${dims.w} ${dims.h / 2}`}
-                preserveAspectRatio="xMidYMid meet"
-                aria-hidden
-              >
-                {flapStitches}
-              </svg>
-            )}
           </motion.div>
 
           {/* shadow cast under the fold as the flap lifts */}
