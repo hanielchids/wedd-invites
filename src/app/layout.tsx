@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import {
   Cormorant_Garamond,
   EB_Garamond,
@@ -56,7 +57,10 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${sans.variable} ${script.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
