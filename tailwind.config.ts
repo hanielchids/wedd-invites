@@ -5,16 +5,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // "Ink & Porcelain" — monochrome editorial palette. Token names kept
-        // from the original garden palette so components restyle in one place.
-        ivory: "#F7F5F1",
-        parchment: "#EFECE6",
-        fern: "#8B8B85",
-        forest: "#1C1C1A",
-        "forest-deep": "#121211",
-        champagne: "#9E9A92",
-        "champagne-light": "#C9C5BD",
-        charcoal: "#1F1F1D",
+        // "Fern & Champagne" — garden-luxury palette for Green Leaves.
+        ivory: "#F7F1E6",
+        parchment: "#F2E9DA",
+        fern: "#6F8F73",
+        forest: "#3E5D46",
+        "forest-deep": "#2F4735",
+        champagne: "#B9A07A",
+        "champagne-light": "#D6C4A4",
+        charcoal: "#2F3A2F",
       },
       fontFamily: {
         display: ["var(--font-display)", "Cormorant Garamond", "serif"],

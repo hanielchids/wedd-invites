@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Monogram from "./Monogram";
+import WaxSeal from "./WaxSeal";
 
 /**
- * Veil-opening reveal: two ivory panels hold for a beat over a centred
- * monogram, then slide apart like an invitation being opened.
+ * Veil-opening reveal: two ivory panels hold for a beat over the wax seal,
+ * then slide apart like an invitation being opened.
  */
 export default function Preloader() {
   const [opening, setOpening] = useState(false);
@@ -51,7 +51,7 @@ export default function Preloader() {
           opening ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
-        <Monogram className="h-24 w-auto" />
+        <WaxSeal className="h-32 w-32 drop-shadow-sm" />
       </div>
     </div>
   );

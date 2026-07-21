@@ -12,7 +12,7 @@ type BotanicalProps = {
  * Single-weight eucalyptus sprig, drawn with a stroke-dashoffset animation
  * the first time it scrolls into view. Used as a section divider ornament.
  */
-export default function Botanical({ className = "", stroke = "#8B8B85" }: BotanicalProps) {
+export default function Botanical({ className = "", stroke = "#6F8F73" }: BotanicalProps) {
   const ref = useRef<SVGSVGElement>(null);
   const [drawn, setDrawn] = useState(false);
 

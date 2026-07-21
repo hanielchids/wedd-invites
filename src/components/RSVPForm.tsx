@@ -97,7 +97,7 @@ export default function RSVPForm() {
 
         {status === "success" ? (
           <Reveal className="mt-14 text-center">
-            <Botanical stroke="#C9C5BD" />
+            <Botanical stroke="#D6C4A4" />
             <p className="mt-6 font-display text-3xl font-light italic text-ivory">
               {rsvp.successMessage}
             </p>

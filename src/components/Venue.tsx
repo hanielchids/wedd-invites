@@ -72,7 +72,7 @@ export default function Venue() {
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center gap-6 px-8 text-center">
-                <Botanical stroke="#C9C5BD" />
+                <Botanical stroke="#B9A07A" />
                 <p className="font-display text-3xl font-light italic text-ivory">
                   {venue.name}
                 </p>
