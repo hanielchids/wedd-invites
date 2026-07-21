@@ -35,8 +35,8 @@ export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-ivory px-5 pb-24 pt-20 sm:pt-24">
       {/* Faint leaf shadow, as if light through greenhouse glass. */}
-      <div className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] opacity-[0.07] blur-[2px] animate-sway">
-        <svg viewBox="0 0 200 200" fill="#3E5D46" aria-hidden className="h-full w-full">
+      <div className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] opacity-[0.05] blur-[2px] animate-sway">
+        <svg viewBox="0 0 200 200" fill="#1C1C1A" aria-hidden className="h-full w-full">
           <path d="M100 10 C 60 50, 50 120, 100 190 C 150 120, 140 50, 100 10 Z" />
           <path d="M30 60 C 55 75, 75 110, 70 160 C 30 130, 20 90, 30 60 Z" />
           <path d="M170 60 C 145 75, 125 110, 130 160 C 170 130, 180 90, 170 60 Z" />
@@ -87,8 +87,9 @@ export default function Hero() {
               fill
               priority
               sizes="(min-width: 1024px) 24rem, 90vw"
-              className="object-cover"
+              className="photo-classic object-cover"
             />
+            <div className="photo-veil" />
           </div>
         </div>
       </div>

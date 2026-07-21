@@ -10,7 +10,7 @@ type MonogramProps = {
  * Interlocked initials inside a thin-stroke arch — the site's "brand".
  * Appears in the preloader, sticky header and footer.
  */
-export default function Monogram({ className = "", color = "#B9A07A" }: MonogramProps) {
+export default function Monogram({ className = "", color = "#9E9A92" }: MonogramProps) {
   const [a, b] = [
     wedding.couple.partnerA.firstName[0],
     wedding.couple.partnerB.firstName[0],

@@ -18,8 +18,9 @@ export default function Invitation() {
               alt={`${couple.partnerA.firstName} and ${couple.partnerB.firstName}`}
               fill
               sizes="(min-width: 1024px) 20rem, 80vw"
-              className="object-cover"
+              className="photo-classic object-cover"
             />
+            <div className="photo-veil" />
           </div>
         </Reveal>
 

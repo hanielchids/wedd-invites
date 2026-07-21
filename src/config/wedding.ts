@@ -222,7 +222,7 @@ export const wedding: WeddingConfig = {
     title: "Garden Formal",
     body:
       "Elegant and easy — suits and cocktail or floor-length dresses in soft, natural tones. The ceremony is on the lawn, so consider block heels. Kindly reserve white for the bride.",
-    palette: ["#3F4A3C", "#7B8471", "#C9C2AE", "#EFEAE0", "#A98A64"],
+    palette: ["#1C1C1A", "#4A4A47", "#8B8B85", "#D8D4CD", "#F5F3EF"],
   },
   stay: {
     eyebrow: "Where to Stay",
