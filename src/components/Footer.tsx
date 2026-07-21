@@ -1,12 +1,12 @@
 import { wedding } from "@/config/wedding";
-import Monogram from "./Monogram";
+import WaxSeal from "./WaxSeal";
 
 export default function Footer() {
   const { couple, dateLabel, footer, venue } = wedding;
 
   return (
     <footer className="bg-forest-deep px-5 py-20 text-center">
-      <Monogram className="mx-auto h-20 w-auto" />
+      <WaxSeal anchor className="mx-auto h-24 w-24" />
       <p className="mt-8 font-display text-3xl font-light italic text-ivory">
         {couple.names}
       </p>
