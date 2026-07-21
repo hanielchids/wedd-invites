@@ -250,6 +250,16 @@ export const wedding: WeddingConfig = {
           "https://maps.google.com/?q=Leopard+Lodge+Skeerpoort+R560+Hartbeespoort",
       },
       {
+        tier: "Affordable · Self-Catering",
+        name: "Brown's Cabin & Cottages",
+        address: "Skeerpoort — minutes from the venue",
+        blurb:
+          "Homely self-catering cabins and cottages on a pecan-nut smallholding in the same valley as Green Leaves, with uninterrupted Magaliesberg views — great value for families or friends sharing.",
+        priceGuide: "from ± R375 pp sharing",
+        mapsUrl:
+          "https://maps.google.com/?q=Browns+Cabin+and+Cottages+Skeerpoort+Hartbeespoort",
+      },
+      {
         tier: "Romantic · Self-Catering",
         name: "Little Swift Chalets",
         address: "Skeerpoort village — ± 10 min from the venue",
