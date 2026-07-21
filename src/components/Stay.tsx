@@ -31,11 +31,6 @@ export default function Stay() {
                 <p className="mt-4 flex-1 font-body text-[0.98rem] leading-relaxed text-charcoal/70">
                   {option.blurb}
                 </p>
-                {option.priceGuide && (
-                  <p className="mt-4 font-sans text-[0.66rem] uppercase tracking-[0.2em] text-charcoal/55">
-                    {option.priceGuide}
-                  </p>
-                )}
                 <a
                   href={option.mapsUrl}
                   target="_blank"
