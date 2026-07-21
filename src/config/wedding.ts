@@ -240,11 +240,50 @@ export const wedding: WeddingConfig = {
           "https://www.google.com/maps/search/?api=1&query=Green+Leaves+Country+Lodge+%26+Venue,+R560,+Hartbeespoort",
       },
       {
-        tier: "Nearby · Hartbeespoort",
+        tier: "Closest · Budget-Friendly",
+        name: "Leopard Lodge",
+        address: "R560, Skeerpoort — 5–10 min from the venue",
+        blurb:
+          "Rustic bush lodge on a Magaliesberg game farm just up the same road — dam views, restaurant, pool and everything from simple rooms to self-catering cabins.",
+        priceGuide: "± R700 – R1 275 / night",
+        mapsUrl:
+          "https://maps.google.com/?q=Leopard+Lodge+Skeerpoort+R560+Hartbeespoort",
+      },
+      {
+        tier: "Romantic · Self-Catering",
+        name: "Little Swift Chalets",
+        address: "Skeerpoort village — ± 10 min from the venue",
+        blurb:
+          "Private open-plan couples' chalets on the river — fireplace, corner bath over the water and your own patio braai. Book early; there are only eight.",
+        priceGuide: "± R1 650 – R1 890 / chalet",
+        mapsUrl: "https://maps.google.com/?q=Little+Swift+Chalets+Skeerpoort",
+      },
+      {
+        tier: "Lodge & Spa · Groups",
+        name: "Amanzingwe Lodge",
+        address: "Broederstroom, Hartbeespoort — ± 20 min from the venue",
+        blurb:
+          "Bushveld lodge and spa in the Magaliesberg foothills with a pool, restaurant and plenty of rooms — an easy pick for a bigger block of guests.",
+        priceGuide: "± R1 800 – R2 000 / night",
+        mapsUrl:
+          "https://maps.google.com/?q=Amanzingwe+Lodge+Broederstroom+Hartbeespoort",
+      },
+      {
+        tier: "Boutique · Luxury",
+        name: "Château la Mer",
+        address: "Ifafi, Hartbeespoort — ± 25 min from the venue",
+        blurb:
+          "French-inspired boutique guesthouse with six individually styled suites, an on-site spa, fine dining and dam views — breakfast included.",
+        priceGuide: "± R2 100 – R2 800 / night",
+        mapsUrl:
+          "https://maps.google.com/?q=Chateau+la+Mer+Exclusive+Guesthouse+Ifafi+Hartbeespoort",
+      },
+      {
+        tier: "More Options",
         name: "Hartbeespoort Guest Lodges",
         address: "Hartbeespoort Dam area",
         blurb:
-          "A range of guesthouses and lodges around the dam village, 15–25 minutes from the venue — restaurants and the cableway close by.",
+          "Plenty more guesthouses and lodges around the dam village, 15–25 minutes from the venue — restaurants and the cableway close by.",
         mapsUrl: "https://maps.google.com/?q=guest+lodges+Hartbeespoort",
       },
     ],
