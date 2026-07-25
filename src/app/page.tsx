@@ -7,6 +7,7 @@ import Schedule from "@/components/Schedule";
 import Venue from "@/components/Venue";
 import DressCode from "@/components/DressCode";
 import RSVPForm from "@/components/RSVPForm";
+import Registry from "@/components/Registry";
 import Stay from "@/components/Stay";
 import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
@@ -24,6 +25,7 @@ export default function Home() {
         <Venue />
         <DressCode />
         <RSVPForm />
+        <Registry />
         <Stay />
         <Faq />
       </main>

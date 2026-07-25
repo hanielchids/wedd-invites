@@ -99,6 +99,15 @@ export type WeddingConfig = {
     /** Swatch hexes rendered as little dots under the dress-code text. */
     palette: string[];
   };
+  registry: {
+    eyebrow: string;
+    heading: string;
+    body: string;
+    /** Registry URL — shown only as a button, never as a raw link. */
+    url: string;
+    buttonLabel: string;
+    closing: string;
+  };
   stay: {
     eyebrow: string;
     title: string;
@@ -224,6 +233,15 @@ export const wedding: WeddingConfig = {
       "Elegant and easy — suits and cocktail or floor-length dresses in soft, natural tones. The ceremony is on the lawn, so consider block heels. Kindly reserve white for the bride.",
     palette: ["#3F4A3C", "#7B8471", "#C9C2AE", "#EFEAE0", "#A98A64"],
   },
+  registry: {
+    eyebrow: "Gifts",
+    heading: "Your presence is truly the best gift we could ask for.",
+    body:
+      "But if you feel so inclined, we've put together a small registry with some of our most wished-for items.",
+    url: "https://www.myregistry.com/wedding-registry/zenzeleni-mathebula-and-haniel-chidavose-johannesburg-gauteng/5546257",
+    buttonLabel: "View Our Registry",
+    closing: "Thank you for being part of this milestone with us.",
+  },
   stay: {
     eyebrow: "Where to Stay",
     title: "Rest Nearby",
@@ -312,7 +330,7 @@ export const wedding: WeddingConfig = {
       },
       {
         q: "What about gifts?",
-        a: "Your presence is truly enough. Should you wish to spoil us, a contribution towards our new life together would be warmly appreciated.",
+        a: "Your presence is truly enough. Should you wish to spoil us, you'll find a small registry of our most wished-for items in the Gifts section above.",
       },
       {
         q: "Will the ceremony be outdoors?",
