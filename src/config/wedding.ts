@@ -142,7 +142,7 @@ export const wedding: WeddingConfig = {
     invitationLine:
       "Together with their families, joyfully invite you to celebrate their marriage",
   },
-  dateISO: "2026-09-17T14:00:00+02:00",
+  dateISO: "2026-09-17T14:30:00+02:00",
   dateLabel: "17 September 2026",
   dayOfWeek: "Thursday",
   hero: {
@@ -161,22 +161,22 @@ export const wedding: WeddingConfig = {
     title: "Order of Celebration",
     items: [
       {
-        time: "13:30",
+        time: "14:00",
         title: "Guests Arrive",
         detail: "Find your seat in the garden as the chapel bell rings.",
       },
       {
-        time: "14:00",
+        time: "14:30",
         title: "The Ceremony",
         detail: "We say I do beneath the trees.",
       },
       {
-        time: "15:00",
+        time: "15:30",
         title: "Canapés & Cocktails",
         detail: "Golden-hour drinks on the lawn while we steal away for photographs.",
       },
       {
-        time: "17:00",
+        time: "17:30",
         title: "The Reception",
         detail: "Dinner, toasts and dancing into the evening.",
       },
