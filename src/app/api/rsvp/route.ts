@@ -12,15 +12,17 @@ import { NextResponse } from "next/server";
  * Env vars override the constants, e.g. per environment.
  */
 
-const FORM_ID = process.env.GOOGLE_FORM_ID ?? ""; // ← paste this event's form id
+const FORM_ID =
+  process.env.GOOGLE_FORM_ID ??
+  "1FAIpQLSezJznA2e_wtl__X7ppgdfoNXUNyftpQ6HbPXp35jZbbb_N-g";
 
 const ENTRY = {
-  name: process.env.GOOGLE_FORM_ENTRY_NAME ?? "",
-  email: process.env.GOOGLE_FORM_ENTRY_EMAIL ?? "",
-  phone: process.env.GOOGLE_FORM_ENTRY_PHONE ?? "",
-  attending: process.env.GOOGLE_FORM_ENTRY_ATTENDING ?? "",
-  dietary: process.env.GOOGLE_FORM_ENTRY_DIETARY ?? "",
-  message: process.env.GOOGLE_FORM_ENTRY_MESSAGE ?? "",
+  name: process.env.GOOGLE_FORM_ENTRY_NAME ?? "entry.236954274",
+  email: process.env.GOOGLE_FORM_ENTRY_EMAIL ?? "entry.1117287134",
+  phone: process.env.GOOGLE_FORM_ENTRY_PHONE ?? "entry.275815979",
+  attending: process.env.GOOGLE_FORM_ENTRY_ATTENDING ?? "entry.1354076483",
+  dietary: process.env.GOOGLE_FORM_ENTRY_DIETARY ?? "entry.667799553",
+  message: process.env.GOOGLE_FORM_ENTRY_MESSAGE ?? "entry.900882754",
 };
 
 type RSVPPayload = {
