@@ -20,6 +20,8 @@ export type StayOption = {
   blurb: string;
   priceGuide?: string;
   mapsUrl: string;
+  /** The place's own website or booking page. */
+  websiteUrl?: string;
 };
 
 export type FaqItem = {
@@ -251,6 +253,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "At the Venue",
         name: "Green Leaves Country Lodge",
+        websiteUrl: "https://greenleaves.co.za/venue/",
         address: "R560, Skeerpoort, Hartbeespoort",
         blurb:
           "Stay where the celebration is — 33 four-star country rooms and safari-style tents among the gardens. Book directly with the lodge and mention the wedding.",
@@ -260,6 +263,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "Closest · Budget-Friendly",
         name: "Leopard Lodge",
+        websiteUrl: "https://leopardlodge.co.za/",
         address: "R560, Skeerpoort — 5–10 min from the venue",
         blurb:
           "Rustic bush lodge on a Magaliesberg game farm just up the same road — dam views, restaurant, pool and everything from simple rooms to self-catering cabins.",
@@ -270,6 +274,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "Affordable · Self-Catering",
         name: "Brown's Cabin & Cottages",
+        websiteUrl: "http://brownscabin.co.za/",
         address: "Skeerpoort — minutes from the venue",
         blurb:
           "Homely self-catering cabins and cottages on a pecan-nut smallholding in the same valley as Green Leaves, with uninterrupted Magaliesberg views — great value for families or friends sharing.",
@@ -280,6 +285,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "Romantic · Self-Catering",
         name: "Little Swift Chalets",
+        websiteUrl: "https://www.swiftchalets.co.za/",
         address: "Skeerpoort village — ± 10 min from the venue",
         blurb:
           "Private open-plan couples' chalets on the river — fireplace, corner bath over the water and your own patio braai. Book early; there are only eight.",
@@ -289,6 +295,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "Lodge & Spa · Groups",
         name: "Amanzingwe Lodge",
+        websiteUrl: "https://za.hotels.com/ho653330112/amanzingwe-lodge-conference-centre-spa-broederstroom-south-africa/",
         address: "Broederstroom, Hartbeespoort — ± 20 min from the venue",
         blurb:
           "Bushveld lodge and spa in the Magaliesberg foothills with a pool, restaurant and plenty of rooms — an easy pick for a bigger block of guests.",
@@ -299,6 +306,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "Boutique · Luxury",
         name: "Château la Mer",
+        websiteUrl: "https://www.chateaulamer.co.za/",
         address: "Ifafi, Hartbeespoort — ± 25 min from the venue",
         blurb:
           "French-inspired boutique guesthouse with six individually styled suites, an on-site spa, fine dining and dam views — breakfast included.",
@@ -309,6 +317,7 @@ export const wedding: WeddingConfig = {
       {
         tier: "More Options",
         name: "Hartbeespoort Guest Lodges",
+        websiteUrl: "https://www.lekkeslaap.co.za/accommodation-in/hartbeespoort",
         address: "Hartbeespoort Dam area",
         blurb:
           "Plenty more guesthouses and lodges around the dam village, 15–25 minutes from the venue — restaurants and the cableway close by.",

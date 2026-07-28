@@ -31,14 +31,26 @@ export default function Stay() {
                 <p className="mt-4 flex-1 font-body text-[0.98rem] leading-relaxed text-charcoal/70">
                   {option.blurb}
                 </p>
-                <a
-                  href={option.mapsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 font-sans text-[0.64rem] uppercase tracking-[0.24em] text-forest underline-offset-4 hover:underline"
-                >
-                  View on Maps
-                </a>
+                <div className="mt-5 flex items-center gap-6">
+                  {option.websiteUrl && (
+                    <a
+                      href={option.websiteUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-sans text-[0.64rem] uppercase tracking-[0.24em] text-forest underline-offset-4 hover:underline"
+                    >
+                      Visit Website
+                    </a>
+                  )}
+                  <a
+                    href={option.mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-sans text-[0.64rem] uppercase tracking-[0.24em] text-charcoal/60 underline-offset-4 hover:text-forest hover:underline"
+                  >
+                    View on Maps
+                  </a>
+                </div>
               </article>
             </Reveal>
           ))}
