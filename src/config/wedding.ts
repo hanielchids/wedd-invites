@@ -156,7 +156,7 @@ export const wedding: WeddingConfig = {
     eyebrow: "You are invited",
     heading: "Together with their families",
     body:
-      "Haniel Nyasha Chidavose and Zenzeleni Luyanda joyfully invite you to witness the beginning of their forever — an afternoon of vows, garden air and golden light in the shadow of the Magalies Mountains.",
+      "Haniel Nyasha Chidavose and Zenzeleni Luyanda Mathebula joyfully invite you to witness the beginning of their forever — an afternoon of vows, garden air and golden light in the shadow of the Magalies Mountains.",
   },
   schedule: {
     eyebrow: "The Day",
