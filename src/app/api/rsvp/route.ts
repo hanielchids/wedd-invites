@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { wedding } from "@/config/wedding";
 
 /**
  * RSVP endpoint.
@@ -92,6 +93,15 @@ async function forwardToGoogleForm(data: RSVPPayload): Promise<boolean> {
 }
 
 export async function POST(request: Request) {
+  // Responses have closed — refuse here too, so a stale page or a direct
+  // POST can't drop a late entry into the sheet.
+  if (wedding.rsvp.closed) {
+    return NextResponse.json(
+      { ok: false, error: wedding.rsvp.closedHeading },
+      { status: 410 }
+    );
+  }
+
   let data: RSVPPayload;
   try {
     data = await request.json();

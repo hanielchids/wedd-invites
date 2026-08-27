@@ -68,7 +68,10 @@ export default function Hero() {
             className="mt-10 animate-fade-up opacity-0"
             style={{ animationDelay: "2.1s" }}
           >
-            <a href="#rsvp" className="btn-ghost">
+            <a
+              href={wedding.rsvp.closed ? "#schedule" : "#rsvp"}
+              className="btn-ghost"
+            >
               <span>{hero.ctaLabel}</span>
             </a>
           </div>
