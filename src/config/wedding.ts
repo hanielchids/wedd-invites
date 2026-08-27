@@ -83,11 +83,6 @@ export type WeddingConfig = {
     finishedMessage: string;
   };
   rsvp: {
-    /** Flip to true once the RSVP deadline has passed — hides the form
-     *  everywhere and makes /api/rsvp refuse new submissions. */
-    closed: boolean;
-    closedHeading: string;
-    closedMessage: string;
     eyebrow: string;
     heading: string;
     intro: string;
@@ -155,7 +150,7 @@ export const wedding: WeddingConfig = {
   hero: {
     eyebrow: "The Wedding of",
     celebrationType: "Garden Ceremony & Reception",
-    ctaLabel: "The Day",
+    ctaLabel: "RSVP",
   },
   invitation: {
     eyebrow: "You are invited",
@@ -214,14 +209,10 @@ export const wedding: WeddingConfig = {
     finishedMessage: "Today is the day. See you at the garden.",
   },
   rsvp: {
-    closed: true,
-    closedHeading: "RSVPs are now closed",
-    closedMessage:
-      "Thank you to everyone who responded — our guest list has been finalised and passed on to the venue. If your plans have changed, please reach out to Haniel or Zenzeleni directly.",
     eyebrow: "Kindly Respond",
     heading: "Will you join us?",
     intro: "Your presence is the greatest gift.",
-    deadlineLabel: "RSVPs closed on 17 August 2026",
+    deadlineLabel: "Please RSVP by 17 August 2026",
     entryNote:
       "So that we may welcome every guest by name, entry on the day is reserved for confirmed RSVPs only — please respond by the date above.",
     acceptLabel: "Joyfully Accept",

@@ -12,9 +12,6 @@ const SUBMITTED_KEY = "glRsvpSubmitted";
 /**
  * The page's one inverted moment: deep forest green, ivory serif, bare
  * bottom-border fields. Posts JSON to /api/rsvp.
- *
- * Once `wedding.rsvp.closed` is set, the form is replaced by a closing
- * notice — the endpoint refuses submissions too, so nothing slips through.
  */
 export default function RSVPForm() {
   const { rsvp } = wedding;
@@ -80,29 +77,6 @@ export default function RSVPForm() {
       setErrorMsg(err instanceof Error ? err.message : null);
       setStatus("error");
     }
-  }
-
-  if (rsvp.closed) {
-    return (
-      <section id="rsvp" className="bg-forest px-5 py-24 sm:py-32">
-        <div className="mx-auto max-w-prose text-center">
-          <Reveal>
-            <p className="eyebrow !text-champagne-light">{rsvp.eyebrow}</p>
-            <div className="hairline" />
-            <h2 className="display-md mt-6 !text-ivory">{rsvp.closedHeading}</h2>
-            <p className="mt-8 font-sans text-[0.66rem] uppercase tracking-[0.26em] text-champagne-light">
-              {rsvp.deadlineLabel}
-            </p>
-            <p className="mx-auto mt-6 max-w-md border border-ivory/25 px-6 py-5 font-body text-sm italic leading-relaxed text-ivory/75">
-              {rsvp.closedMessage}
-            </p>
-            <div className="mt-10">
-              <Botanical stroke="#D6C4A4" />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-    );
   }
 
   return (

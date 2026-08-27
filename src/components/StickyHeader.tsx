@@ -3,15 +3,12 @@
 import { useEffect, useState } from "react";
 import { wedding } from "@/config/wedding";
 
-/** RSVP drops out of the nav once responses have closed. */
-const LINKS: [string, string][] = [
+const LINKS = [
   ["The Day", "#schedule"],
   ["Venue", "#venue"],
-  ...(wedding.rsvp.closed
-    ? []
-    : ([["RSVP", "#rsvp"]] as [string, string][])),
+  ["RSVP", "#rsvp"],
   ["Stay", "#stay"],
-];
+] as const;
 
 /** Slim ivory bar that appears once the guest scrolls past the hero. */
 export default function StickyHeader() {
