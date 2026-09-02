@@ -95,7 +95,14 @@ export default function RSVPForm() {
           </p>
         </Reveal>
 
-        {status === "success" ? (
+        {rsvp.closed ? (
+          <Reveal className="mt-14 text-center">
+            <Botanical stroke="#D6C4A4" />
+            <p className="mx-auto mt-6 max-w-md font-body text-lg italic leading-relaxed text-ivory/85">
+              {rsvp.closedMessage}
+            </p>
+          </Reveal>
+        ) : status === "success" ? (
           <Reveal className="mt-14 text-center">
             <Botanical stroke="#D6C4A4" />
             <p className="mt-6 font-display text-3xl font-light italic text-ivory">

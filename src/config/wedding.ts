@@ -93,6 +93,10 @@ export type WeddingConfig = {
     submitLabel: string;
     dietaryOptions: string[];
     successMessage: string;
+    /** When true, the form is replaced by a closed notice and the API rejects submissions. */
+    closed: boolean;
+    /** Message shown in place of the form once RSVPs are closed. */
+    closedMessage: string;
   };
   dressCode: {
     eyebrow: string;
@@ -227,6 +231,9 @@ export const wedding: WeddingConfig = {
       "Seafood allergy",
     ],
     successMessage: "Thank you — your RSVP has been received. We cannot wait to celebrate with you.",
+    closed: true,
+    closedMessage:
+      "RSVPs are now closed. Thank you to everyone who responded — we cannot wait to celebrate with you. If you need to reach us, please contact the couple directly.",
   },
   dressCode: {
     eyebrow: "Attire",

@@ -12,6 +12,13 @@ import { NextResponse } from "next/server";
  * Env vars override the constants, e.g. per environment.
  */
 
+/**
+ * Master switch. When true, the endpoint rejects every submission so no new
+ * RSVP is recorded — regardless of the client UI. Override per environment
+ * with RSVP_CLOSED=false to reopen.
+ */
+const RSVP_CLOSED = process.env.RSVP_CLOSED !== "false";
+
 const FORM_ID =
   process.env.GOOGLE_FORM_ID ??
   "1FAIpQLSezJznA2e_wtl__X7ppgdfoNXUNyftpQ6HbPXp35jZbbb_N-g";
@@ -92,6 +99,14 @@ async function forwardToGoogleForm(data: RSVPPayload): Promise<boolean> {
 }
 
 export async function POST(request: Request) {
+  // RSVPs are closed — record nothing, whoever is calling.
+  if (RSVP_CLOSED) {
+    return NextResponse.json(
+      { ok: false, error: "RSVPs are now closed." },
+      { status: 403 }
+    );
+  }
+
   let data: RSVPPayload;
   try {
     data = await request.json();
