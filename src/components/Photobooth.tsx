@@ -698,12 +698,12 @@ const PB_CSS = `
 .pb-done{outline:3px solid #6F8F73; outline-offset:-3px}
 .pb-done .pb-go{color:#6F8F73}
 .pb-pin{position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:16px; height:16px; border-radius:50%; background:#B9A07A; border:2px solid #2F3A2F; z-index:2}
-.pb-heart{position:absolute; right:6px; top:6px; z-index:4; border:none; background:#FFFEF9; border-radius:10px 60px 10px 60px/60px 10px 60px 10px; box-shadow:0 2px 6px rgba(0,0,0,.25); display:flex; align-items:center; gap:4px; padding:8px 10px; font-size:17px; color:#8F8A79; cursor:pointer}
+.pb-heart{position:absolute; left:6px; top:6px; z-index:4; border:none; background:#FFFEF9; border-radius:10px 60px 10px 60px/60px 10px 60px 10px; box-shadow:0 2px 6px rgba(0,0,0,.25); display:flex; align-items:center; gap:4px; padding:8px 10px; font-size:17px; color:#8F8A79; cursor:pointer}
 .pb-heart svg{width:22px; height:22px; color:#C25B4E; fill:none; stroke:currentColor; stroke-width:2.4}
 .pb-loved svg{fill:#C25B4E; animation:pbpop .35s ease}
 .pb-loved{color:#C25B4E}
 @keyframes pbpop{0%{transform:scale(1)}40%{transform:scale(1.45) rotate(-8deg)}100%{transform:scale(1)}}
-.pb-newbadge{position:absolute; top:6px; left:-6px; transform:rotate(-6deg); background:#B9A07A; color:#2F3A2F; font-size:13px; padding:2px 8px; border:2px solid #2F3A2F; border-radius:100px 8px 100px 8px/8px 100px 8px 100px; z-index:2}
+.pb-newbadge{position:absolute; top:6px; right:-6px; transform:rotate(6deg); background:#B9A07A; color:#2F3A2F; font-size:13px; padding:2px 8px; border:2px solid #2F3A2F; border-radius:100px 8px 100px 8px/8px 100px 8px 100px; z-index:2}
 .pb-toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px); background:#2F3A2F; color:#F7F1E6; padding:10px 20px; font-size:17px; border-radius:14px 120px 14px 120px/120px 14px 120px 14px; transition:transform .3s ease; z-index:70; max-width:88vw; text-align:center}
 .pb-toast.pb-show{transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion: reduce){
