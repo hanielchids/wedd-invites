@@ -115,6 +115,8 @@ export default function Photobooth() {
   const [facing, setFacing] = useState<"environment" | "user">("environment");
   const streamRef = useRef<MediaStream | null>(null);
   const remoteRef = useRef<"unknown" | "on" | "off">("unknown");
+  const tokenRef = useRef<string>("");
+  const [gated, setGated] = useState(false);
   const deviceIdRef = useRef<string>("");
   const idMapRef = useRef<Map<string, string>>(new Map()); // local id -> server id
   const [fresh, setFresh] = useState<WallItem | null>(null);
@@ -147,13 +149,22 @@ export default function Photobooth() {
       localStorage.setItem("hz-device-id", d);
     }
     deviceIdRef.current = d;
+    tokenRef.current = new URLSearchParams(window.location.search).get("t") ?? "";
 
     let dead = false;
     const load = async () => {
       try {
-        const res = await fetch("/api/photowall", { cache: "no-store" });
+        const res = await fetch("/api/photowall", {
+          cache: "no-store",
+          headers: { "x-photowall-token": tokenRef.current },
+        });
         if (res.status === 503) {
           remoteRef.current = "off";
+          return;
+        }
+        if (res.status === 403) {
+          remoteRef.current = "off";
+          setGated(true);
           return;
         }
         if (!res.ok) return;
@@ -224,8 +235,14 @@ export default function Photobooth() {
       try {
         const signRes = await fetch("/api/photowall/sign", {
           method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ contentType: blob.type || "image/jpeg" }),
+          headers: {
+            "content-type": "application/json",
+            "x-photowall-token": tokenRef.current,
+          },
+          body: JSON.stringify({
+            contentType: blob.type || "image/jpeg",
+            deviceId: deviceIdRef.current,
+          }),
         });
         if (!signRes.ok) throw new Error();
         const { key, url } = (await signRes.json()) as { key: string; url: string };
@@ -237,7 +254,10 @@ export default function Photobooth() {
         if (!put.ok) throw new Error();
         const meta = await fetch("/api/photowall", {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            "x-photowall-token": tokenRef.current,
+          },
           body: JSON.stringify({ key, name: item.name, deviceId: deviceIdRef.current }),
         });
         if (!meta.ok) throw new Error();
@@ -418,6 +438,13 @@ export default function Photobooth() {
           </p>
         </header>
 
+        {gated && (
+          <p className="pb-wonky-b mx-auto mt-4 max-w-[40ch] rotate-[-0.6deg] bg-[#FBF7EE] px-4 py-3 text-center text-[16px] text-charcoal/70">
+            this wall is invite-only — open it from the QR code on your table
+            and your photos will join everyone else&apos;s
+          </p>
+        )}
+
         {/* camera */}
         <div className="pb-wonky relative mt-6 rotate-[0.5deg] bg-[#FBF7EE] p-4 pb-[18px] shadow-[5px_6px_0_rgba(47,58,47,0.16)]">
           <div className="pb-tape" aria-hidden="true" />
@@ -591,7 +618,10 @@ export default function Photobooth() {
                         if (remoteRef.current === "on" && sid) {
                           fetch("/api/photowall/react", {
                             method: "POST",
-                            headers: { "content-type": "application/json" },
+                            headers: {
+                              "content-type": "application/json",
+                              "x-photowall-token": tokenRef.current,
+                            },
                             body: JSON.stringify({
                               uploadId: sid,
                               deviceId: deviceIdRef.current,

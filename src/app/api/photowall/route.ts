@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { photowallAdmin, publicPhotoUrl } from "@/lib/photowall-server";
+import {
+  photowallAdmin,
+  publicPhotoUrl,
+  checkLinkToken,
+  uploadsOpen,
+  recentUploadCount,
+  MAX_UPLOADS_PER_DEVICE_PER_HOUR,
+} from "@/lib/photowall-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /** GET /api/photowall — the wall, newest first. 503 until Supabase env is set. */
-export async function GET() {
+export async function GET(req: NextRequest) {
   const admin = photowallAdmin();
   if (!admin) {
     return NextResponse.json({ configured: false }, { status: 503 });
+  }
+  if (!checkLinkToken(req)) {
+    return NextResponse.json({ error: "invite only" }, { status: 403 });
   }
   const { data, error } = await admin
     .from("uploads")
@@ -41,6 +51,12 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const admin = photowallAdmin();
   if (!admin) return NextResponse.json({ configured: false }, { status: 503 });
+  if (!checkLinkToken(req)) {
+    return NextResponse.json({ error: "invite only" }, { status: 403 });
+  }
+  if (!uploadsOpen()) {
+    return NextResponse.json({ error: "uploads closed" }, { status: 403 });
+  }
 
   const body = await req.json().catch(() => ({}));
   const { key, name, deviceId, width, height } = body ?? {};
@@ -48,6 +64,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "bad request" }, { status: 400 });
   }
   const firstName = (typeof name === "string" && name.trim().slice(0, 40)) || "guest";
+
+  if ((await recentUploadCount(admin, deviceId)) >= MAX_UPLOADS_PER_DEVICE_PER_HOUR) {
+    return NextResponse.json({ error: "easy there — try again in a bit" }, { status: 429 });
+  }
 
   const { data: guest, error: gErr } = await admin
     .from("guests")
