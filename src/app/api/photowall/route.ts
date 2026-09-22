@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   }
   const { data, error } = await admin
     .from("uploads")
-    .select("id, storage_key, created_at, guests(first_name), reactions(device_id)")
+    .select("id, photo_no, storage_key, created_at, guests(first_name), reactions(device_id)")
     .eq("status", "ready")
     .order("created_at", { ascending: false })
     .limit(200);
@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
     const guest = Array.isArray(row.guests) ? row.guests[0] : row.guests;
     return {
       id: row.id,
+      no: row.photo_no as number | null,
       url: publicPhotoUrl(row.storage_key),
       name: (guest as { first_name?: string } | null)?.first_name ?? "guest",
       time: new Date(row.created_at).toLocaleTimeString("en-ZA", {
@@ -87,12 +88,12 @@ export async function POST(req: NextRequest) {
       height: typeof height === "number" ? height : null,
       status: "ready",
     })
-    .select("id")
+    .select("id, photo_no")
     .single();
   if (uErr || !upload) {
     return NextResponse.json({ error: uErr?.message ?? "insert failed" }, { status: 500 });
   }
-  return NextResponse.json({ id: upload.id });
+  return NextResponse.json({ id: upload.id, no: upload.photo_no });
 }
 
 /** PATCH /api/photowall  { id, action: "hide", adminKey } — the couple's two-tap hide. */

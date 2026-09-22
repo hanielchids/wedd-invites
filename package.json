@@ -8,7 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "form:entries": "node scripts/get-form-entries.mjs"
+    "form:entries": "node scripts/get-form-entries.mjs",
+    "thankyou:list": "node scripts/send-thankyous.mjs list",
+    "thankyou:preview": "node scripts/send-thankyous.mjs preview",
+    "thankyou:dry": "node scripts/send-thankyous.mjs send --dry-run",
+    "thankyou:send": "node scripts/send-thankyous.mjs send"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
@@ -18,10 +22,12 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^1.0.9",
     "@types/node": "^20.16.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
+    "nodemailer": "^10.0.10",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3"

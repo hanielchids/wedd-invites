@@ -8,6 +8,9 @@
 # production
 /build
 
+# thank-you mail merge output (rendered polaroids + sent log)
+scripts/out/
+
 # misc
 .DS_Store
 *.pem

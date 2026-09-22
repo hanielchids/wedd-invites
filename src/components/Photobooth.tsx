@@ -18,6 +18,7 @@ const caveat = Caveat({ weight: "700", subsets: ["latin"] });
 
 type WallItem = {
   id: string;
+  no?: number | null; // server-assigned polaroid number, shown as #NN
   name: string;
   time: string;
   src: string; // object URL / data URL / public storage URL of the (unframed) photo
@@ -29,6 +30,7 @@ type WallItem = {
 
 type ServerItem = {
   id: string;
+  no?: number | null;
   url: string;
   name: string;
   time: string;
@@ -174,6 +176,7 @@ export default function Photobooth() {
         setWall((w) => {
           const mapped: WallItem[] = items.map((s) => ({
             id: s.id,
+            no: s.no,
             name: s.name,
             time: s.time,
             src: s.url,
@@ -261,8 +264,9 @@ export default function Photobooth() {
           body: JSON.stringify({ key, name: item.name, deviceId: deviceIdRef.current }),
         });
         if (!meta.ok) throw new Error();
-        const { id } = (await meta.json()) as { id: string };
+        const { id, no } = (await meta.json()) as { id: string; no?: number | null };
         idMapRef.current.set(item.id, id);
+        if (no) setWall((w) => w.map((p) => (p.id === item.id ? { ...p, no } : p)));
       } catch {
         if (remoteRef.current === "on")
           say("couldn't reach the wall — kept on your phone for now");
@@ -601,7 +605,11 @@ export default function Photobooth() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.src} alt={`polaroid by ${p.name}`} />
                     </div>
-                    <PolaroidChin small name={p.name} sub={p.time} />
+                    <PolaroidChin
+                      small
+                      name={p.name}
+                      sub={p.no ? `#${String(p.no).padStart(2, "0")} · ${p.time}` : p.time}
+                    />
                     <button
                       className={`pb-heart ${p.loved ? "pb-loved" : ""}`}
                       aria-label="love this photo"
