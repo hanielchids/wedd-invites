@@ -57,6 +57,8 @@ const flagVal = (name) => {
   const i = rest.indexOf(name);
   return i >= 0 ? rest[i + 1] : undefined;
 };
+/** "classic" (typeset header) or "bloom" (Redouté-rose banner from the ceremony programs). */
+const THEME = flagVal("--theme") ?? process.env.EMAIL_THEME ?? "classic";
 
 // ---------------------------------------------------------------- supabase (photos)
 async function fetchPhotos() {
@@ -193,16 +195,73 @@ async function composePolaroid(photo) {
   return c.toBuffer("image/jpeg", 92);
 }
 
+/**
+ * Bloom-theme header banner — the v6 botanical ceremony program in email form:
+ * Redouté roses bleeding in from the corners on ivory, eland crest, Pinyon
+ * Script names, sage laurel divider. Composed as one image (600×320 display)
+ * so the typography survives every mail client.
+ */
+async function composeBloomHeader() {
+  const W = 1200, H = 640;
+  const c = createCanvas(W, H);
+  const x = c.getContext("2d");
+  x.fillStyle = "#FBFAF4";
+  x.fillRect(0, 0, W, H);
+
+  const bloom = (img, cx, cy, w, rot, mirror) => {
+    const h = (w * img.height) / img.width;
+    x.save();
+    x.translate(cx, cy);
+    x.rotate((rot * Math.PI) / 180);
+    if (mirror) x.scale(-1, 1);
+    x.drawImage(img, -w / 2, -h / 2, w, h);
+    x.restore();
+  };
+  try {
+    const rose1 = await loadImage(path.join(ROOT, "scripts", "assets", "bloom-candolleana.jpg"));
+    const rose2 = await loadImage(path.join(ROOT, "scripts", "assets", "bloom-gallica.jpg"));
+    bloom(rose1, 60, 115, 430, -16, false);
+    bloom(rose2, 1140, 125, 430, 18, true);
+  } catch { /* roses are decorative — never block the send */ }
+
+  try {
+    const seal = await loadImage(path.join(ROOT, "public", "images", "eland-seal.png"));
+    x.drawImage(seal, 600 - 95, 95, 190, 190);
+  } catch {}
+
+  x.fillStyle = "#282722";
+  x.font = `105px "Pinyon Script", ${CURSIVE}`;
+  x.textAlign = "center";
+  x.fillText("Haniel & Zenzi", 600, 430);
+
+  // sage laurel-line divider with centre diamond, as on the program
+  const SAGE = "#7F8674";
+  x.strokeStyle = SAGE;
+  x.fillStyle = SAGE;
+  x.lineWidth = 2.4;
+  for (const [a, b] of [[430, 578], [622, 770]]) {
+    x.beginPath(); x.moveTo(a, 510); x.lineTo(b, 510); x.stroke();
+  }
+  x.beginPath();
+  x.moveTo(600, 499); x.lineTo(611, 510); x.lineTo(600, 521); x.lineTo(589, 510);
+  x.closePath(); x.fill();
+  for (const cx of [430, 770]) {
+    x.beginPath(); x.arc(cx, 510, 3.2, 0, Math.PI * 2); x.fill();
+  }
+
+  return c.toBuffer("image/png");
+}
+
 // ---------------------------------------------------------------- email html
 const INK = "#3A382F", MUTE = "#8F8A79", FERN = "#3E5D46", CHAMPAGNE = "#B9A07A", CHARCOAL = "#2F3A2F";
-const PALETTE = ["#3F4A3C", "#7B8471", "#C9C2AE", "#EFEAE0", "#A98A64"];
+
+/** Footer link — straight to the photo wall, carrying the invite token if one is set. */
+function wallUrl() {
+  const t = process.env.PHOTOWALL_LINK_TOKEN;
+  return `https://hanielandzenzi.co.za/photobooth${t ? `?t=${encodeURIComponent(t)}` : ""}`;
+}
 
 function emailHtml({ guestName, polaroids }) {
-  const dots = PALETTE.map(
-    (hex) =>
-      `<td style="padding:0 5px;"><div style="width:12px;height:12px;border-radius:50%;background:${hex};border:1px solid rgba(255,254,249,.35);font-size:0;line-height:0;">&nbsp;</div></td>`,
-  ).join("");
-
   const rows = [];
   for (let i = 0; i < polaroids.length; i += 2) rows.push(polaroids.slice(i, i + 2));
   const gallery = rows
@@ -221,40 +280,47 @@ function emailHtml({ guestName, polaroids }) {
 
   return `<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Thank you — Haniel &amp; Zenzeleni</title></head>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Thank you — Haniel &amp; Zenzi</title></head>
 <body style="margin:0;padding:0;background:#F3EEE3;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EEE3;">
 <tr><td align="center" style="padding:32px 14px;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:#FFFEF9;border:1px solid #E7DFCE;">
 
     <!-- header -->
-    <tr><td align="center" style="padding:42px 40px 6px;">
+    ${
+      THEME === "bloom"
+        ? `<tr><td style="padding:0;">
+      <img src="cid:header" width="600" alt="Haniel &amp; Zenzi" style="display:block;width:100%;max-width:600px;height:auto;" />
+    </td></tr>`
+        : `<tr><td align="center" style="padding:42px 40px 6px;">
       <img src="cid:seal" width="58" height="58" alt="H&amp;Z crest" style="display:block;" />
     </td></tr>
     <tr><td align="center" style="padding:14px 40px 4px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:30px;line-height:1.2;color:${INK};">
-      Haniel <span style="color:${FERN};">&amp;</span> Zenzeleni
-    </td></tr>
-    <tr><td align="center" style="padding:2px 40px 0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:3px;color:${MUTE};">
-      17 SEPTEMBER 2026 &nbsp;&middot;&nbsp; GREEN LEAVES
+      Haniel <span style="color:${FERN};">&amp;</span> Zenzi
     </td></tr>
     <tr><td align="center" style="padding:22px 40px 8px;">
       <div style="width:64px;border-top:1px solid ${CHAMPAGNE};font-size:0;line-height:0;">&nbsp;</div>
-    </td></tr>
+    </td></tr>`
+    }
 
     <!-- letter -->
     <tr><td style="padding:16px 44px 6px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.75;color:${INK};">
       <p style="margin:0 0 18px;">Dear ${guestName},</p>
       <p style="margin:0 0 18px;">Thank you for celebrating with us at Green Leaves. From the vows beneath the trees to the very last song, having you there made the day everything we hoped it would be&nbsp;&mdash; we felt every hug, every toast and every turn on the dance floor.</p>
-      <p style="margin:0 0 18px;">The photo wall caught you in the act. ${
-        polaroids.length === 1 ? "Here is your polaroid" : "Here are your polaroids"
-      } from the night&nbsp;&mdash; yours to keep.</p>
+      ${
+        polaroids.length
+          ? `<p style="margin:0 0 18px;">The photo wall caught you in the act. ${
+              polaroids.length === 1 ? "Here is your polaroid" : "Here are your polaroids"
+            } from the night&nbsp;&mdash; yours to keep.</p>`
+          : ""
+      }
     </td></tr>
 
     <!-- polaroids -->
     ${
       polaroids.length
         ? `<tr><td style="padding:6px 30px 10px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F2E7;border:1px solid #EDE5D3;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${THEME === "bloom" ? "#FBFAF4" : "#F7F2E7"};border:1px solid ${THEME === "bloom" ? "#E5E1D2" : "#EDE5D3"};">
         <tr><td align="center" style="padding:20px 12px 2px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:${MUTE};">fresh off the wall</td></tr>
         <tr><td style="padding:4px 8px 16px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${gallery}</table></td></tr>
       </table>
@@ -265,22 +331,19 @@ function emailHtml({ guestName, polaroids }) {
     <!-- sign-off -->
     <tr><td style="padding:18px 44px 40px;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.75;color:${INK};">
       <p style="margin:0 0 4px;">With love and gratitude,</p>
-      <p style="margin:0;font-style:italic;font-size:24px;">Haniel &amp; Zenzeleni</p>
+      <p style="margin:0;font-style:italic;font-size:24px;">Haniel &amp; Zenzi</p>
     </td></tr>
 
     <!-- footer -->
     <tr><td style="background:${CHARCOAL};padding:34px 40px 30px;" align="center">
       <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:20px;color:#F7F1E6;">H&middot;Z</div>
-      <div style="padding-top:10px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:#F7F1E6;">Haniel &amp; Zenzeleni</div>
+      <div style="padding-top:10px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:#F7F1E6;">Haniel &amp; Zenzi</div>
       <div style="padding-top:6px;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2.5px;color:#C9C2AE;">THURSDAY &nbsp;17&nbsp;SEPTEMBER&nbsp;2026</div>
-      <div style="padding-top:4px;font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#A8B2A0;">Green Leaves Country Lodge &nbsp;&middot;&nbsp; Skeerpoort, Hartbeespoort</div>
-      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px auto 0;"><tr>${dots}</tr></table>
-      <div style="padding-top:18px;font-family:Georgia,'Times New Roman',serif;font-size:13px;color:#C9C2AE;">Chidavose &nbsp;&middot;&nbsp; Zondo</div>
-      <div style="padding-top:12px;font-family:Helvetica,Arial,sans-serif;font-size:12px;">
-        <a href="https://hanielandzenzi.co.za" style="color:#C9C2AE;text-decoration:underline;">hanielandzenzi.co.za</a>
+      <div style="padding-top:16px;font-family:Helvetica,Arial,sans-serif;font-size:12px;">
+        <a href="${wallUrl()}" style="color:#C9C2AE;text-decoration:underline;">hanielandzenzi.co.za</a>
       </div>
       <div style="padding-top:16px;font-family:Helvetica,Arial,sans-serif;font-size:10.5px;line-height:1.6;color:#7E8A78;">
-        You&rsquo;re receiving this note because you celebrated with us on the day.<br/>Sent once, with love &mdash; no list, no follow-ups.
+        You&rsquo;re receiving this note because you celebrated with us on the day.
       </div>
     </td></tr>
 
@@ -304,7 +367,9 @@ async function buildMessage(guest, picked) {
   }
   const html = emailHtml({ guestName: guest.name || "friend", polaroids });
   const attachments = [
-    { filename: "eland-seal.png", path: path.join(ROOT, "public", "images", "eland-seal.png"), cid: "seal" },
+    THEME === "bloom"
+      ? { filename: "header.png", content: await composeBloomHeader(), cid: "header" }
+      : { filename: "eland-seal.png", path: path.join(ROOT, "public", "images", "eland-seal.png"), cid: "seal" },
     ...polaroids.map((p) => ({ filename: p.filename, content: p.buffer, cid: p.cid })),
   ];
   return { html, attachments, polaroids };
@@ -328,15 +393,45 @@ if (cmd === "list") {
     guest = { name: "Thabo & Lerato", email: "preview@example.com" };
     picked = { photos: photos.slice(0, 2), missing: [] };
   }
-  const { html, polaroids } = await buildMessage(guest, picked);
+  const { html, attachments, polaroids } = await buildMessage(guest, picked);
   let file = html.replaceAll("cid:seal", "../../public/images/eland-seal.png");
+  const header = attachments.find((a) => a.cid === "header");
+  if (header) {
+    writeFileSync(path.join(OUT, "bloom-header.png"), header.content);
+    file = file.replaceAll("cid:header", "bloom-header.png");
+  }
   for (const p of polaroids) {
     writeFileSync(path.join(OUT, p.filename), p.buffer);
     file = file.replaceAll(`cid:${p.cid}`, p.filename);
   }
-  writeFileSync(path.join(OUT, "preview.html"), file);
-  console.log(`Preview → scripts/out/preview.html (open it in a browser)`);
+  const name = THEME === "bloom" ? "preview-bloom.html" : "preview.html";
+  writeFileSync(path.join(OUT, name), file);
+  console.log(`Preview → scripts/out/${name} (open it in a browser)`);
   console.log(`Polaroids → ${polaroids.map((p) => `scripts/out/${p.filename}`).join(", ")}`);
+} else if (cmd === "test") {
+  // node scripts/send-thankyous.mjs test someone@example.com — dummy email, first two wall photos
+  const to = rest.find((a) => a.includes("@"));
+  if (!to) { console.error("Usage: send-thankyous.mjs test someone@example.com"); process.exit(1); }
+  const photos = flags.has("--no-photos") ? [] : (await fetchPhotos()).slice(0, 2);
+  const guest = { name: "Thabo & Lerato", email: to };
+  const { html, attachments } = await buildMessage(guest, { photos, missing: [] });
+  const transport = nodemailer.createTransport({
+    host: need("SMTP_HOST"),
+    port: +(process.env.SMTP_PORT ?? 587),
+    secure: +(process.env.SMTP_PORT ?? 587) === 465,
+    auth: { user: need("SMTP_USER"), pass: need("SMTP_PASS") },
+  });
+  await transport.sendMail({
+    from: process.env.MAIL_FROM ?? `"Haniel & Zenzi" <${process.env.SMTP_USER}>`,
+    to,
+    replyTo: process.env.MAIL_REPLY_TO,
+    subject: `[TEST] ${process.env.MAIL_SUBJECT ?? "Thank you for celebrating with us 🌿"}`,
+    html,
+    attachments,
+  });
+  console.log(
+    `Test email sent to ${to} (${photos.length ? `polaroids ${photos.map((p) => `#${p.no}`).join(", ")}` : "no polaroids"})`,
+  );
 } else if (cmd === "send") {
   const dry = flags.has("--dry-run");
   const only = flagVal("--only")?.toLowerCase();
@@ -355,7 +450,7 @@ if (cmd === "list") {
         secure: +(process.env.SMTP_PORT ?? 587) === 465,
         auth: { user: need("SMTP_USER"), pass: need("SMTP_PASS") },
       });
-  const from = process.env.MAIL_FROM ?? `"Haniel & Zenzeleni" <${process.env.SMTP_USER}>`;
+  const from = process.env.MAIL_FROM ?? `"Haniel & Zenzi" <${process.env.SMTP_USER}>`;
   const subject = process.env.MAIL_SUBJECT ?? "Thank you for celebrating with us 🌿";
 
   let sent = 0, skipped = 0, failed = 0;
@@ -367,6 +462,11 @@ if (cmd === "list") {
       continue;
     }
     const picked = pickPhotos(guest, photos);
+    if (flags.has("--with-photos-only") && !picked.photos.length) {
+      console.log(`↷  ${guest.email} — no photos, held back for a later run`);
+      skipped++;
+      continue;
+    }
     const nos = picked.photos.map((p) => `#${p.no}`).join(", ") || "no photos";
     const tag = picked.matched === "auto" ? " (auto-matched by name)" : picked.matched === "none" ? " ⚠ none found" : "";
     if (picked.missing.length) console.log(`   ⚠ ${guest.email}: sheet lists missing numbers ${picked.missing.join(", ")}`);
